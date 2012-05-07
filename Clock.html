@@ -1,0 +1,173 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Water Clock</title>
+
+	<link href="assets/style.css" rel="stylesheet" type="text/css" />
+	<script src="lib/easeljs-0.4.2.min.js"></script>
+	<script src="lib/tweenjs-0.2.0.min.js"></script>
+	<script src="lib/movieclip-0.4.1.min.js"></script>
+	<script type="text/javascript">
+	var canvas;
+	var stage;
+	var emitters;
+	var fpsLabel;
+
+	var arr0 =[ [0,0,1,1,1,1,1,0,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,1,0,0,0,0,0,1,0],
+				[0,1,0,0,0,0,0,1,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,0,1,1,1,1,1,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr1 =[ [0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[0,0,0,1,0,0,0,0,0],
+				[0,0,1,1,0,0,0,0,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr2 =[ [0,0,1,0,0,0,0,1,0],
+				[0,1,1,0,0,0,1,1,0],
+				[0,1,0,0,0,1,1,1,0],
+				[0,1,0,0,1,1,0,1,0],
+				[0,1,1,1,1,0,0,1,0],
+				[0,0,1,1,0,0,0,1,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr3 =[	[0,0,1,0,0,0,1,0,0],
+				[0,1,1,0,0,0,1,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,0,1,1,0,1,1,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr4 =[	[0,0,0,0,0,1,1,0,0],
+				[0,0,0,0,1,1,1,0,0],
+				[0,0,0,1,1,0,1,0,0],
+				[0,0,1,1,0,0,1,0,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr5 =[	[0,1,1,1,1,0,1,0,0],
+				[0,1,1,1,1,0,1,1,0],
+				[0,1,1,0,1,0,0,1,0],
+				[0,1,1,0,1,0,0,1,0],
+				[0,1,1,0,1,1,1,1,0],
+				[0,1,1,0,0,1,1,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr6 =[	[0,0,1,1,1,1,1,0,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,1,0,1,1,1,1,0],
+				[0,0,1,0,0,1,1,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr7 =[	[0,1,1,0,0,0,0,0,0],
+				[0,1,1,0,0,0,0,0,0],
+				[0,1,0,0,0,0,1,1,0],
+				[0,1,0,0,1,1,1,1,0],
+				[0,1,1,1,1,1,0,0,0],
+				[0,1,1,1,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr8 =[	[0,0,1,1,0,1,1,0,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,0,1,1,0,1,1,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var arr9 =[	[0,0,1,1,0,0,1,0,0],
+				[0,1,1,1,1,0,1,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,0,0,1,0,0,1,0],
+				[0,1,1,1,1,1,1,1,0],
+				[0,0,1,1,1,1,1,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+	var point=[ [0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0],
+				[0,0,1,1,0,0,1,1,0],
+				[0,0,1,1,0,0,1,1,0],
+				[0,0,1,1,0,0,1,1,0],
+				[0,0,0,0,0,0,0,0,0],
+				[0,0,0,0,0,0,0,0,0]];
+
+	function init() {
+	    canvas = document.getElementById('myCanvas');
+	    width = canvas.width;
+	    height = canvas.height;
+	    stage = new Stage(canvas);
+
+	    setInterval(showClock, 1000);
+
+	    Ticker.setFPS(30);
+		Ticker.addListener(window)
+
+		fpsLabel = new Text("-- fps","bold 14px Arial","#FFF");
+		stage.addChild(fpsLabel);
+		fpsLabel.x = 10;
+		fpsLabel.y = 20;
+	}
+
+	function showClock(e) {
+		var d = new Date()
+		var minutes= d.getMinutes();
+		var hours= d.getHours();
+
+		var hour0 = hours.toString().split("")[0];
+		var hour1 = hours.toString().split("")[1];
+		var minute0 = minutes.toString().split("")[0];
+		var minute1 = minutes.toString().split("")[1];
+
+		emit(hour0 == undefined? a = arr0 : eval("arr" + hour0),[10,20,30,40,50,60,70]);
+		emit(hour1 == undefined? a = arr0 : eval("arr" + hour1),[80,90,100,110,120,130,140]);
+		emit(point,[150,160,170,180,190,200,210]);
+		emit(minute0 == undefined? a = arr0 : eval("arr" + minute0),[220,230,240,250,260,270,280]);
+		emit(minute1 == undefined? a = arr0 : eval("arr" + minute1),[290,300,310,320,330,340,350]);
+	}
+
+	function tick() {
+		fpsLabel.text = Math.round(Ticker.getMeasuredFPS())+" fps";
+		stage.update();
+	}
+
+	function emit(currentArr, postions) {
+		var tween;
+		    for (var i = currentArr.length-1 ; i >= 0; i--) {
+				var obj = currentArr[i];
+				for (var j = currentArr[i].length -1 ; j >= 0 ; j--) {
+					var obj = currentArr[i][j];
+					var ball = new Bitmap("assets/ball.png");
+		    		ball.x = postions[i];
+		    		ball.y = 20;
+		    		ball.alpha =  obj;
+		    		stage.addChild(ball);
+
+		    		var delta = 8 - j;
+					tween = Tween.get(ball)
+					.wait(15 * delta)
+					.to({y:400},600, Ease.quadIn)
+					.call(tweenComplete, [ball])
+				};
+			};
+			function tweenComplete(obj) {
+		      stage.removeChild(obj);
+		      ball = null;
+		      tween = null;
+		    }
+	}
+
+	</script>
+
+</head>
+<body onload="init()">
+
+	<header id="header" class="EaselJS">
+	    <h1><span class="text-product">Water Clock<strong>JS</strong></span></h1>
+	    <p>This example shows the hour and minutes.Inspired by Osaka Metro http://www.youtube.com/watch?v=gusJeslMbLc</p>
+	</header>
+
+	<canvas id="myCanvas" width="960" height="400"></canvas>
+
+</body>
+</html>
